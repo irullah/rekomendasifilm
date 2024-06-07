@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Sistem Rekomendasi Berbasis Grup</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <!-- <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon"> -->
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Arsha
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top ">
+      <div class="container d-flex align-items-center">
+  
+        <h1 class="logo me-auto"><a href="/rekomendasifilm/">Prototipe</a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+  
+        <nav id="navbar" class="navbar">
+          <ul>
+            <li><a class="nav-link scrollto active" href="/rekomendasifilm/">Home</a></li>
+            <li><a class="nav-link scrollto" href="/rekomendasifilm/about">About</a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+  
+      </div>
+    </header><!-- End Header -->
+
+    
+    
+    <main id="main">
+      
+      <!-- ======= Hero Section ======= -->
+      <section id="hero" class="d-flex align-items-center">
+    
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+              <h1>Sistem Rekomendasi Berbasis Grup</h1>
+              <!-- <h2>We are team of talented designers making websites with Bootstrap</h2> -->
+              <!-- <div class="d-flex justify-content-center justify-content-lg-start">
+                <a href="#about" class="btn-get-started scrollto">Get Started</a>
+                <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+              </div> -->
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+              <img src="{{ url_for('static', filename='assets/img/hero-img.png') }}" class="img-fluid animated" alt="">
+            </div>
+          </div>
+        </div>
+    
+      </section>
+      <!-- End Hero -->
+
+    <!-- ======= About Us Section ======= -->
+    <section id="about" class="about">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Rekomendasi</h2>
+          <p>
+            Metode Similaritas : {{ metode_full }}
+          </p>
+        </div>
+
+        <div class="row content">
+          <div class="col-lg-2"></div>
+          <div class="col-lg-8 pt-4 pt-lg-0">
+            <form action="/rekomendasifilm" method="POST">
+                <div class="row form-group">
+                    <input type="hidden" name="metode_full" value="{{ metode_full }}">
+                    <input type="hidden" name="metode" value="{{ metode }}">
+                    <input type="hidden" name="step" value="rekom">
+                    <div class="col-6">
+                        <label for="userTarget">Target <i>User</i></label>
+                        <select class="form-control" name="user_target" id="userTarget">
+                            {% for user in target %}
+                                <option value="{{ user }}">{{ user }}</option>    
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="jumlahN">Jumlah N</label>
+                        <select class="form-control" id="jumlahN" name="top_n">
+                            {% for n in jumlah_n %}
+                                <option value="{{ n }}">{{ n }}</option>    
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <p class="text-danger">
+                        <i>Disclaimer</i>: Dataset yang digunakan sangat <i>sparse</i> karena jumlah film yang telah diberi <i>rating</i> oleh <i>user</i> sangatlah sedikit. Sedangkan metode evaluasi dilakukan secara <i>offline</i>, yaitu bahwa evaluasi dilakukan dengan membandingkan Data Rekomendasi (yang dihasilkan dari pemodelan metode) dengan Data <i>Ground-truth</i> (yang didapatkan dari dataset). Dengan demikian, kecenderungan nilai evaluasinya sangatlah rendah (atau bahkan bernilai “0” bagi sejumlah target <i>user</i>),
+                    </p>
+                    <legend class="col-form-label col-sm-2 pt-0">Based</legend>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="based" id="based1" value="influence-based" checked>
+                            <label class="form-check-label" for="based1">
+                                <i>Influence-based</i>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="based" id="based2" value="group-based">
+                            <label class="form-check-label" for="based2">
+                                <i>Group-based</i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4"><button type="submit" class="btn-learn-more">Tampilkan Rekomendasi</button></div>
+                    <div class="col-4"></div>
+                </div>
+            </form>
+          </div>
+          <div class="col-lg-2"></div>
+        </div>
+
+      </div>
+    </section>
+    <!-- End About Us Section -->
+
+  </main>
+  <!-- End #main -->
+
+  {% if metode == "pcc" %}
+      <!-- start footer -->
+      <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+          <h4 class="text-center">Referensi:</h4>
+          <ol>
+            <li id="data-ref1">Nozari, R. B., & Koohi, H. (2020). A novel group recommender system based on members’ influence and leader impact. <i>Knowledge-Based Systems, 205</i>, 106296. DOI: <a href="https://doi.org/10.1016/j.knosys.2020.106296">https://doi.org/10.1016/j.knosys.2020.106296</a> </li>
+          </ol>
+        </footer>
+      </div>
+    <!-- end footer -->
+  {% endif %}
+  
+
+<!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="container footer-bottom clearfix">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Tim 2 PKM</span></strong>. All Rights Reserved
+      </div>
+      <!-- <div class="credits"> -->
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/ -->
+        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div> -->
+    </div>
+  </footer><!-- End Footer -->
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+</body>
+
+</html>
+
+
+

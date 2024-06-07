@@ -1,0 +1,71 @@
+#tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+#tooltiptext {
+    background-color: #000;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 15px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#tooltiptext::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border: 15px solid;
+    border-color: #000 #0000 #0000 #0000;
+
+}
+
+#tooltip:hover #tooltiptext {
+    top: -280%;
+    visibility: visible;
+    opacity: 1;
+
+}
+
+a {
+    color:grey;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+sub {
+    cursor: pointer;
+}
+
+#card-pengucapan {
+    visibility: hidden;
+}
+
+#lang-id {
+    color: blue;
+}
+
+body {
+    font-family: Candara;
+}
+
+#background-biru {
+    color: #fff;
+}
+
+.judul {
+    text-align: center;
+    font: bold;
+}
