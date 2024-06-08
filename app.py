@@ -5,11 +5,6 @@ import numpy as np
 
 app = Flask(__name__)
 
-# def calculate_rmse(predicted_ratings, actual_ratings):
-#     diff = predicted_ratings - actual_ratings
-#     rmse = np.sqrt(np.mean(diff**2))
-#     return rmse
-
 def calculate_rmse(predicted_ratings, actual_ratings):
     diff = predicted_ratings - actual_ratings
     rmse = np.sqrt(np.mean(diff**2))
@@ -26,11 +21,8 @@ def grupRating(metode, user_id):
     )
 
     test_data.drop("unix_timestamp", inplace=True, axis=1)
-    # rating_cols = ['user_id', 'movie_id', 'rating']
-    # test_data = pd.read_csv('https://raw.githubusercontent.com/ThoriqFathu/SRP/master/Cold-Start/tes-fold'+str(2)+'-rating10.txt', sep='::', names=rating_cols)
     data_ = test_data.values
     test_data = np.array(test_data)
-    # st.write(test_data[0][0] == 1)
     model = jb.load(f"models/{metode}.joblib")
     rat_user = []
     item_test = []
@@ -38,11 +30,6 @@ def grupRating(metode, user_id):
         if i[0] == user_id:
             rat_user.append(i)
             item_test.append(i[1])
-    # a, b, c = rat_user[0]
-    # st.write(a)
-    # st.write(rat_user[0])
-    # st.write(user_id)
-    # model = jb.load("modelitr2.joblib")
     matClus, anggotaClus, weights = model
     for ind, g in enumerate(anggotaClus):
         if (user_id - 1) in g:
@@ -53,27 +40,13 @@ def grupRating(metode, user_id):
     pred_ratings = []
     item_train = []
     for k, data in enumerate(vek_rating):
-        # st.write(data)
         if data == 0:
             item_id = k + 1
             mat = np.array((matClus)[nearsGrup])[:, item_id - 1]
-            # # print(np.array(mat))
-            # index_u = np.where(mat!=0)[0]
-            # -------------------
-
-            # print((index_u))
-            # print(userIndex)
-            # print(nearsGrup)
-            # print(len(anggotaClus[0]))
-            # print(weights[nearsGrup][8][userIndex])
-            # print(np.array(index_u))
-
-            # ----------------------
             influence = np.zeros(len(mat))
             for uID in range(len(mat)):
                 index_u = np.where(mat != 0)[0]
 
-                # print(uID, userIndex)
                 if len(index_u) == 0:
                     pred = 1
                 else:
@@ -88,8 +61,7 @@ def grupRating(metode, user_id):
                                     weights[nearsGrup][index][uID]
                                 )
                             )
-                        # print(uweight)
-                        # uweight = np.nan_to_num(uweight)
+
                     if mat[uID] == 0:
                         r = 1
                     else:
@@ -104,20 +76,17 @@ def grupRating(metode, user_id):
                     if pred < 1:
                         pred = 1
                 influence[uID] = pred
-            # print('item - ',item_id-1)
-            # print(influence)
+
             pred = np.mean(influence)
             if int(item_id) in item_test:
                 pred_ratings.append(pred)
             list_pred.append([int(item_id), pred])
-            # st.write(item_id)
+
         else:
             item_id = k + 1
             item_train.append([int(item_id), int(data)])
 
-    # list_pred =  dict(sorted(list_pred.items(), key=lambda item: item[1], reverse=True))
     list_pred = sorted(list_pred, key=lambda x: x[1], reverse=True)
-    # st.write(list_pred)
     return list_pred, item_train, rat_user, pred_ratings
 
 def influence(metode, user_id):
@@ -141,11 +110,7 @@ def influence(metode, user_id):
         if i[0] == user_id:
             rat_user.append(i)
             item_test.append(i[1])
-    # a, b, c = rat_user[0]
-    # st.write(a)
-    # st.write(rat_user[1])
-    # st.write(user_id)
-    # model = jb.load("modelitr2.joblib")
+
     matClus, anggotaClus, weights = model
     for ind, g in enumerate(anggotaClus):
         if (user_id - 1) in g:
@@ -156,13 +121,9 @@ def influence(metode, user_id):
     pred_ratings = []
     item_train = []
     for k, data in enumerate(vek_rating):
-        # st.write(data)
         if data == 0:
             item_id = k + 1
-            # st.write(nearsGrup)
-            # st.write(userIndex)
             mat = np.array((matClus)[nearsGrup])[:, item_id - 1]
-            # print(np.array(mat))
             index_u = np.where(mat != 0)[0]
             if len(index_u) == 0:
                 pred = 1.0
@@ -170,26 +131,19 @@ def influence(metode, user_id):
                 uweight = []
                 for index in index_u:
                     uweight.append(weights[nearsGrup][index][userIndex])
-                # print(uweight)
-                # uweight = np.nan_to_num(uweight)
                 pred = sum((mat[index_u] - 1) * np.array(uweight))
                 pred += 1
                 if pred > 5:
                     pred = 5.0
                 if pred < 1:
                     pred = 1.0
-            # list_pred[int(item_id)] = pred
             if int(item_id) in item_test:
                 pred_ratings.append(pred)
             list_pred.append([int(item_id), pred])
-            # st.write(item_id)
         else:
             item_id = k + 1
             item_train.append([int(item_id), int(data)])
 
-    # st.write(userIndex,nearsGrup)
-    # st.write(anggotaClus[1][0])
-    # list_pred =  dict(sorted(list_pred.items(), key=lambda item: item[1], reverse=True))
     list_pred = sorted(list_pred, key=lambda x: x[1], reverse=True)
     return list_pred, item_train, rat_user, pred_ratings
 
@@ -211,8 +165,6 @@ def rekomendasi_film():
             )
 
             test_data.drop("unix_timestamp", inplace=True, axis=1)
-            # rating_cols = ['user_id', 'movie_id', 'rating']
-            # test_data = pd.read_csv('https://raw.githubusercontent.com/ThoriqFathu/SRP/master/Cold-Start/tes-fold'+str(2)+'-rating10.txt', sep='::', names=rating_cols)
             data_ = test_data.values
             test_data = np.array(test_data)
 
@@ -310,8 +262,6 @@ def rekomendasi_film():
                             list_irisan.append([irisan[i], judul[0], list_ground[k][2], list_pred[i][1]])
             
             presisi = (len(irisan)) / (top_n)
-            # actual_ratings = np.array([data[2] for data in rat_user])
-            # pred_ratings = np.array(pred_ratings)
 
             actual_ratings = np.array([data[2] for data in rat_user if int(data[1]) in irisan])
             pred_ratings = np.array([data[1] for data in list_pred if int(data[0]) in irisan])
@@ -319,7 +269,6 @@ def rekomendasi_film():
             rmse = calculate_rmse(pred_ratings, actual_ratings)
 
             return render_template('hasil_rekomendasi.html', user_target=user_target, top_n=top_n, metode=metode, metode_full=metode_full, list_recom=list_recom, list_train=list_train, list_ground=list_ground, list_irisan=list_irisan, presisi=presisi, rmse=rmse)
-            # return rmse
 
         elif step == "detail":
             metode_full = request.form['metode_full']
